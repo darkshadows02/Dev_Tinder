@@ -1,25 +1,49 @@
 const express=require("express");
 
 const app=express();
+
+app.get("/getuserdata", (req, res)=>{
+          try{
+            throw new Error("gdshfdsj")
+            res.send("user data sent")
+         }catch(err){
+           res.status(500).send("some error contact support team")
+         }
+})
+app.use("/", (err, req, res, next)=>{
+       if(err){
+        res.status(500).send("something went wrong");
+       }
+})
+
+
+
+
+
+
+
+
+
+
+  
 // middlewares
-const {adminauth, userauth}=require("./middlewares/auth")
+// const {adminauth, userauth}=require("./middlewares/auth")
+// app.use("/admin", adminauth);
 
-app.use("/admin", adminauth);
+// app.get("/admin/getalldata", (eq, res, next)=>{
+//        res.send("User data sent");
+// })
+// app.get("/admin/getalldata", (eq, res, next)=>{
+//     res.send("User data sent");
+// })
+// app.get("/admin/deleteuser", (eq, res, next)=>{
+//     res.send("User data sent");
+// })
 
-app.get("/admin/getalldata", (eq, res, next)=>{
-       res.send("User data sent");
-})
-app.get("/admin/getalldata", (eq, res, next)=>{
-    res.send("User data sent");
-})
-app.get("/admin/deleteuser", (eq, res, next)=>{
-    res.send("User data sent");
-})
-
-app.get("/user",userauth, (req, res, next)=>{
-    console.log("handling / user routes")
-    res.send("respond route 2")
-})
+// app.get("/user",userauth, (req, res, next)=>{
+//     console.log("handling / user routes")
+//     res.send("respond route 2")
+// })
 
 
 
