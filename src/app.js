@@ -1,20 +1,55 @@
 const express=require("express");
 
 const app=express();
-
-app.get('/user', (req, res, next)=>{
-    console.log("handeling the route user 1 !!")
-      next();
-},(req, res, next)=>{
-    console.log("handeling the route user 2 !!")
-      next();
-},(req, res, next)=>{
-    console.log("handeling the route user 3 !!")
-      next();
-},(req, res)=>{
-    console.log("handeling the route user 4 !!")
-    res.send("responce!!")
+// middlewares
+app.use("/admin", (req, res, next)=>{
+    console.log("admin auth getting checked !!");
+        const token="xyssz";
+        if(token!="xyz"){
+            res.status(401).send("unauthorized request")
+        }else{
+            next();
+        }
 })
+app.get("/admin/getalldata", (eq, res, next)=>{
+       res.send("User data sent");
+})
+app.get("/admin/getalldata", (eq, res, next)=>{
+    res.send("User data sent");
+})
+app.get("/admin/deleteuser", (eq, res, next)=>{
+    res.send("User data sent");
+})
+
+// app.get("/", (req, res, next)=>{
+//     console.log("handling / user routes")
+//     next();
+// })
+
+// app.get("/user", (req, res, next)=>{
+//     console.log("handling / user routes")
+//        next();
+// }, (req, res, next)=>{
+//     //    res.send("respond route 1")
+//     console.log("handling routess 2")
+//     next();
+// },(req, res)=>{
+//     res.send("respond route 2")
+// })
+
+// app.get('/user', (req, res, next)=>{
+//     console.log("handeling the route user 1 !!")
+//       next();
+// },(req, res, next)=>{
+//     console.log("handeling the route user 2 !!")
+//       next();
+// },(req, res, next)=>{
+//     console.log("handeling the route user 3 !!")
+//       next();
+// },(req, res)=>{
+//     console.log("handeling the route user 4 !!")
+//     res.send("responce!!")
+// })
 
 // app.get("/hello", (req, res)=>{
 //     res.send("hello from the server!")
@@ -28,7 +63,7 @@ app.get('/user', (req, res, next)=>{
 //     res.send("deleted save request")
 // })
 
-
+app
 // app.use((req, res)=>{
 //     res.send("hello from the server!")
 // })
