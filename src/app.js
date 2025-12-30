@@ -2,15 +2,10 @@ const express=require("express");
 
 const app=express();
 // middlewares
-app.use("/admin", (req, res, next)=>{
-    console.log("admin auth getting checked !!");
-        const token="xyssz";
-        if(token!="xyz"){
-            res.status(401).send("unauthorized request")
-        }else{
-            next();
-        }
-})
+const {adminauth, userauth}=require("./middlewares/auth")
+
+app.use("/admin", adminauth);
+
 app.get("/admin/getalldata", (eq, res, next)=>{
        res.send("User data sent");
 })
@@ -20,6 +15,13 @@ app.get("/admin/getalldata", (eq, res, next)=>{
 app.get("/admin/deleteuser", (eq, res, next)=>{
     res.send("User data sent");
 })
+
+app.get("/user",userauth, (req, res, next)=>{
+    console.log("handling / user routes")
+    res.send("respond route 2")
+})
+
+
 
 // app.get("/", (req, res, next)=>{
 //     console.log("handling / user routes")
