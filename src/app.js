@@ -9,15 +9,15 @@ app.post("/signup", async (req, res)=>{
     //creating a new instance of the user model
     //    console.log(req.body)
     const user=new User(req.body);
-        try{
+        try{   
        await user.save()
        console.log("user added in database")
        res.send("user add sucessfully...")
         }catch(err){
-            res.status(400).send("error saving the user", err.message);
+            res.status(400).send("error saving the user:"+ err.message);
         }
        
-})
+});
 //get user by email
 //checking for finding models in db for one
 app.get("/user", async (req, res)=>{
@@ -35,6 +35,28 @@ app.get("/feed", async(req, res)=>{
           res.send(users)
        }catch(err){
         res.status(400).send("error saving the user", err.message);
+       }
+})
+// delete -user from database
+app.delete("/user", async(req, res)=>{
+    const userid=req.body.userId;
+    // console.log(userid)
+       try{
+         const users=await User.findByIdAndDelete(userid)
+           res.send(users)
+        }catch(err){
+        res.status(400).send("error saving the user", err.message);
+       }
+})
+
+app.patch("/user", async (req, res)=>{
+    const userid=req.body.userId;
+    const data=req.body;
+       try{
+         await User.findByIdAndUpdate({ _id:userid}, data, {runValidators:true})
+      res.send("data updated")
+    }catch(err){
+        res.status(400).send("error saving the user"+err.message);
        }
 })
 
