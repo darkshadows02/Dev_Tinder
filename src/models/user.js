@@ -13,7 +13,6 @@ const userSchema=mongoose.Schema({
     emailId:{
         type:String,
         required:true,
-        unique:true,
         lowercase:true,
         trim:true
     },
@@ -44,6 +43,7 @@ const userSchema=mongoose.Schema({
     },
     skills:{
          type:[String],
+         maxLength:10
     }
 
 }, {
