@@ -1,5 +1,5 @@
 const mongoose=require("mongoose");
-
+const validator=require("validator")
 const userSchema=mongoose.Schema({
     firstName:{
         type:String,
@@ -14,11 +14,21 @@ const userSchema=mongoose.Schema({
         type:String,
         required:true,
         lowercase:true,
-        trim:true
+        trim:true,
+        validate(value){
+        if(!validator.isEmail(value)){
+            throw new Error("Invalid email id"+value);
+        }
+    }
     },
     password:{
         type:String,
-        required:true
+        required:true,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("ENTER A STRONG PASSWORD"+value);
+            }
+        }
     },
     age:{
         type:Number,
@@ -35,7 +45,12 @@ const userSchema=mongoose.Schema({
     },
     photoUrl:{
         type:String,
-        default:"https://www.pngkey.com/maxpic/u2q8r5t4i1t4o0q8/"
+        default:"https://www.pngkey.com/maxpic/u2q8r5t4i1t4o0q8/",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("Invalid PHOTO URL"+value);
+            }
+        }
     },
     about:{
         type:String,
