@@ -4,7 +4,10 @@ const app=express();
  const User=require("./models/user")
 const {validateSignUpDate}=require("./utils/validation")
  const bcrypt=require("bcrypt");
+ const cookieParser =require("cookie-parser")
+ const jwt = require("jsonwebtoken")
 app.use(express.json())
+app.use(cookieParser()) ;
 app.post("/signup", async (req, res)=>{
     //    console.log(req.body)
     try{  
@@ -39,12 +42,34 @@ app.post("/login", async(req, res)=>{
            }
            const isPasswordValid=await bcrypt.compare(password, user.password);
            if(isPasswordValid){
+             const token= await jwt.sign({_id:user._id}, "DEV@INDER$790");
+            //    console.log(token)
+             res.cookie("token", token);
              res.send("Login Sucessful !!")
            }else{
               throw new Error("Invalid credential")
            }
     }catch(err){
         res.status(400).send("ERROR"+" "+err.message);
+    }
+})
+app.get("/profile", async(req, res)=>{
+       try{
+       const cookies=req.cookies;
+        const {token}=cookies;
+    //    console.log(token)
+          if(!token){
+            throw new Error("Invalid token")
+          }
+         const decodedMessage=await jwt.verify(token, "DEV@INDER$790");
+         const {_id}=decodedMessage;
+        //  console.log("logged in user is " + _id);
+         const user=await User.findById(_id);
+          if(!user){
+              throw new Error("Invalid user")
+          }
+    res.send(user)}catch(err){
+        res.status(400).send("ERROR"+err.message)
     }
 })
 //get user by email
