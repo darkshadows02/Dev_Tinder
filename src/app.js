@@ -6,6 +6,7 @@ const {validateSignUpDate}=require("./utils/validation")
  const bcrypt=require("bcrypt");
  const cookieParser =require("cookie-parser")
  const jwt = require("jsonwebtoken")
+ const {userauth}=require("./middlewares/auth")
 app.use(express.json())
 app.use(cookieParser()) ;
 app.post("/signup", async (req, res)=>{
@@ -42,7 +43,7 @@ app.post("/login", async(req, res)=>{
            }
            const isPasswordValid=await bcrypt.compare(password, user.password);
            if(isPasswordValid){
-             const token= await jwt.sign({_id:user._id}, "DEV@INDER$790");
+             const token= await jwt.sign({_id:user._id}, "DEV@INDER$790", {expiresIn:"0d"});
             //    console.log(token)
              res.cookie("token", token);
              res.send("Login Sucessful !!")
@@ -53,85 +54,18 @@ app.post("/login", async(req, res)=>{
         res.status(400).send("ERROR"+" "+err.message);
     }
 })
-app.get("/profile", async(req, res)=>{
+app.get("/profile",userauth, async(req, res)=>{
        try{
-       const cookies=req.cookies;
-        const {token}=cookies;
-    //    console.log(token)
-          if(!token){
-            throw new Error("Invalid token")
-          }
-         const decodedMessage=await jwt.verify(token, "DEV@INDER$790");
-         const {_id}=decodedMessage;
-        //  console.log("logged in user is " + _id);
-         const user=await User.findById(_id);
-          if(!user){
-              throw new Error("Invalid user")
-          }
-    res.send(user)}catch(err){
+    const user=req.user;
+    res.send(user)
+}catch(err){
         res.status(400).send("ERROR"+err.message)
     }
 })
-//get user by email
-//checking for finding models in db for one
-app.get("/user", async (req, res)=>{
-       try{
-       const users=  await User.findOne({emailId:req.body.emailId})
-      res.send(users)
-    }catch(err){
-        res.status(400).send("error saving the user", err.message);
-       }
-})
- // feed API - get/feed - get all the users from the database
-app.get("/feed", async(req, res)=>{
-       try{
-          const users=await User.find({})
-          res.send(users)
-       }catch(err){
-        res.status(400).send("error saving the user", err.message);
-       }
-})
-// delete -user from database
-app.delete("/user", async(req, res)=>{
-    const userid=req.body.userId;
-    // console.log(userid)
-       try{
-         const users=await User.findByIdAndDelete(userid)
-           res.send(users)
-        }catch(err){
-        res.status(400).send("error saving the user", err.message);
-       }
-})
-                //params
-app.patch("/user/:userid", async (req, res)=>{
-    const userid=req.params?.userid;
-    const data=req.body;
-       try{
-           const ALLOWED_UPDATEDS=[
-             "photoUrl",
-             "about",
-             "gender",
-             "age",
-             "skills"
-           ];
-        //    console.log(ALLOWED_UPDATEDS)
-           const isUpdateAllowed= Object.keys(data).every((k)=>
-            ALLOWED_UPDATEDS.includes(k)
-       );
-           console.log(isUpdateAllowed);
 
-           if(!isUpdateAllowed){
-             throw new Error("Update not allowed")
-           }
-           if(data.skills.length>10){
-               throw new Error("size is greter then 10")
-           }
-         await User.findByIdAndUpdate({ _id:userid}, data, {runValidators:true})
-      res.send("data updated")
-    }catch(err){
-        res.status(400).send("error saving the user"+err.message);
-       }
-})
+app.post("/sendConnectionRequest",userauth, (req, res)=>{
+     res.send("send the connection request");   
+});
 
 connectDb().then(()=>{
     console.log("cluster connected sucessfually...")
