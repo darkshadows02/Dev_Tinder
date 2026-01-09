@@ -10,14 +10,10 @@ const {validateSignUpDate}=require("./utils/validation")
 app.use(express.json())
 app.use(cookieParser()) ;
 app.post("/signup", async (req, res)=>{
-    //    console.log(req.body)
     try{  
-        //validation first
         validateSignUpDate(req); 
-        // then password encryption 
       const {firstName, lastName, emailId, password}=req.body;
         const passwordHash=await bcrypt.hash(password, 10);
- //creating a new instance of the user model
   
  const user=new User({
       firstName,
@@ -39,12 +35,11 @@ app.post("/login", async(req, res)=>{
        const {emailId, password}=req.body;
            const user=await User.findOne({emailId:emailId})
            if(!user){
-            throw new Error("Invllid credentials")
+            throw new Error("  Invllid credentials")
            }
-           const isPasswordValid=await bcrypt.compare(password, user.password);
+           const isPasswordValid=await user.validatePassword(password);
            if(isPasswordValid){
-             const token= await jwt.sign({_id:user._id}, "DEV@INDER$790", {expiresIn:"0d"});
-            //    console.log(token)
+             const token= await  user.getJWT();
              res.cookie("token", token);
              res.send("Login Sucessful !!")
            }else{
