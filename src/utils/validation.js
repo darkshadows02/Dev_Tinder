@@ -10,6 +10,22 @@ const validateSignUpDate=(req)=>{
              throw new Error("Please enter a strong Password")
        }
 };
+const validateEditProfileData=(req)=>{
+      const allowwdEditFields=[
+        "firstName", 
+        "lastName",
+         "emailId", 
+         "PhotoURL", 
+         "gender", 
+         "age", 
+         "about", 
+         "skill"];
+      const isEditAllowed=Object.keys(req.body).every((fileld)=>
+        allowwdEditFields.includes(fileld)
+    )
+    return isEditAllowed;
+}
 module.exports={
     validateSignUpDate,
+    validateEditProfileData,
 }
