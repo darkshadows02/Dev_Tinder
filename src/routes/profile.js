@@ -12,14 +12,19 @@ profileRouter.get("/profile",userauth, async(req, res)=>{
  }
 })
 
-profileRouter.patch("/profile/edit", (req, res)=>{
+profileRouter.patch("/profile/edit",userauth, async  (req, res)=>{
+     console.log(req.user+"is there")
       try{
          if(!validateEditProfileData(req)){
              throw new Error("Invalid Edit Request")
          }
-         const loggedInUser = req.user;
+          const loggedInUser = req.user;
          console.log(loggedInUser)
+         Object.keys(req.body).forEach((key)=>(loggedInUser[key]=req.body[key]));
+          await loggedInUser.save();
+        // res.send(req.body)
       }catch(err){
+        // console.log(req.user)
         res.status(400).send("ERROR :"+ Error.message)
       }
 })

@@ -15,11 +15,11 @@ const validateEditProfileData=(req)=>{
         "firstName", 
         "lastName",
          "emailId", 
-         "PhotoURL", 
+         "PhotoUrl", 
          "gender", 
          "age", 
          "about", 
-         "skill"];
+         "skills"];
       const isEditAllowed=Object.keys(req.body).every((fileld)=>
         allowwdEditFields.includes(fileld)
     )
