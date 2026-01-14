@@ -25,12 +25,13 @@
 });
 authRouter.post("/login", async(req, res)=>{
     try{
-       const {emailId, password}=req.body;
+       const {emailId, password}=req.body;   
            const user=await User.findOne({emailId:emailId})
               
            if(!user){
-            throw new Error("  Invllid credentials")
+            throw new Error("Invllid credentials")
            }
+           console.log(req.body)
            const isPasswordValid=await user.validatePassword(password);
             
            if(isPasswordValid){
@@ -44,7 +45,7 @@ authRouter.post("/login", async(req, res)=>{
         res.status(400).send("ERROR"+" "+err.message);
     }
 })
- 
+
 authRouter.post("/logout", async (req, res)=>{
       res.cookie("token", null, {
         expires: new Date(Date.now()),
