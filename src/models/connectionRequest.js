@@ -20,6 +20,16 @@ const conncetionRequestSchema=new mongoose.Schema({
 },{
         timestamps:true,  
 })
+// arrow function will not work
+// when we save before it will call
+conncetionRequestSchema.pre("save", function (next){
+      const conncetionRequest=this;
+      console.log("check fails")
+      if(conncetionRequest.fromUserId.equals(conncetionRequest.toUserId)){
+         throw new Error("Cannot send connection request to yourself !")
+      }
+      next();
+})
 
 const ConncetionRequestModle=new mongoose.model(
        "ConncetionRequest",
