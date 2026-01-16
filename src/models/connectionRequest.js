@@ -20,6 +20,9 @@ const conncetionRequestSchema=new mongoose.Schema({
 },{
         timestamps:true,  
 })
+
+//Compound Indexes
+conncetionRequestSchema.index({fromUserId:1, toUserId:1 })
 // arrow function will not work
 // when we save before it will call
 conncetionRequestSchema.pre("save", function (next){
