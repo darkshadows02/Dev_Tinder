@@ -50,18 +50,22 @@ requestRouter.post("/request/review/:status/:requestId", userauth, async(req, re
     try{
         const loggedInId=req.user;
         const {status, requestId}=req.params;
+        console.log(status+" "+requestId+" "+loggedInId._id)
         const allowedStatus=["accepted", "rejected"];
         if(!allowedStatus.includes(status)){
             return res.status(400).json({message: "Status not allowed !!"});
         }
+        
         const conncetionRequest=await ConncetionRequest.findOne({
             _id:requestId,
             toUserId:loggedInId._id,
             status:"interested"
         });
+         console.log(conncetionRequest)
         if(!conncetionRequest){
-            return res.send(404).json({message: "connection request not allowed"})
+            return res.status(404).json({message: "connection request not allowed",})
         }
+        console.log(status+" "+requestId)
         conncetionRequest.status=status;
         const data =await conncetionRequest.save();
        res.json({message: "Connection request" + status, data})
