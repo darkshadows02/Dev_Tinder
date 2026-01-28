@@ -17,3 +17,26 @@
 - GET/connection
 - GET/request/received
 - GET/feed -gets us the profile of other users on platform
+
+
+
+--feed 
+user should see all the user cards except
+0. his own card
+1. his connection
+2. ignored pople
+3. alredy sent the connection request
+
+example :  rahul=[mark, donald, ms, virat]
+rahul->akshay->rejected rahul->elon->accepted
+initally all they r into list but when rahul accepted or rejected anything 
+then it remove from the lis 
+for example here elon=[mark, donald, ms, virat] all will come expect rahul
+same for akshay 
+
+--> list can contain only 10 user at a time so 
+we r using pagination concept
+
+/feed?page=1&limit=10 => 1-10 => .skip(0) & .limit(10)
+/feed?page=2&limit=20 => 2-20 => .skip(10) & .limit(10)
+/feed?page=3&limit=30 => 3-30 => .skip(20) & .limit(10)

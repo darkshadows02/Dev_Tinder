@@ -1,6 +1,8 @@
 const express= require("express");
 const { userauth } = require("../middlewares/auth");
 const ConncetionRequest = require("../models/connectionRequest");
+const authRouter = require("./auth");
+const User = require("../models/user");
 const userRouter=express.Router();
 
 
@@ -45,6 +47,37 @@ userRouter.get("/user/connections", userauth,  async(req, res)=>{
     }catch(err){
         res.status(400).send("ERROR"+err.message) 
     }
+})
+
+userRouter.get("/feed", userauth, async(req, res)=>{
+       try{
+
+        const loggedInUser=req.user;
+        const conncetionRequests=await ConncetionRequest.find({
+            $or:[
+                {fromUserId:loggedInUser._id},
+                {toUserId:loggedInUser._id}
+            ]
+        }).select("fromUserId toUserId");
+
+        const hideUserFromFeed = new Set();
+        conncetionRequests.forEach((req)=>{
+            hideUserFromFeed.add(req.fromUserId.toString());
+            hideUserFromFeed.add(req.toUserId.toString());
+        });
+
+        const users =await User.find({
+            $and:[
+              {_id:{$nin:Array.from(hideUserFromFeed)}},
+               {_id:{$ne:loggedInUser._id}}
+            ]
+        }).select(USER_SAFE_DATA)
+
+      res.send(users);
+
+       }catch(err){
+        res.status(400).send("ERROR"+err.message)
+       }
 })
 
 
