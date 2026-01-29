@@ -51,6 +51,10 @@ userRouter.get("/user/connections", userauth,  async(req, res)=>{
 
 userRouter.get("/feed", userauth, async(req, res)=>{
        try{
+           const page=parseInt(req.query.page) || 1;
+           const limit =parseInt(req.query.limit) || 10;
+           const skip=(page-1)*limit;
+            //   limit=(limit>50)?50:limit;
 
         const loggedInUser=req.user;
         const conncetionRequests=await ConncetionRequest.find({
@@ -71,7 +75,7 @@ userRouter.get("/feed", userauth, async(req, res)=>{
               {_id:{$nin:Array.from(hideUserFromFeed)}},
                {_id:{$ne:loggedInUser._id}}
             ]
-        }).select(USER_SAFE_DATA)
+        }).select(USER_SAFE_DATA).skip(skip).limit(limit)
 
       res.send(users);
 
