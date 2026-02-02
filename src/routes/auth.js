@@ -31,13 +31,14 @@ authRouter.post("/login", async(req, res)=>{
            if(!user){
             throw new Error("Invllid credentials")
            }
-           console.log(req.body)
+            console.log(req.body)
            const isPasswordValid=await user.validatePassword(password);
             
            if(isPasswordValid){
              const token= await  user.getJWT();
-             res.cookie("token", token);
-             res.send("Login Sucessful !!")
+             res.cookie("token", token, {httpOnly:true,secure: false,
+              sameSite: "lax", });
+             res.send (user)
            }else{
               throw new Error("Invalid credential")
            }
