@@ -31,7 +31,7 @@ authRouter.post("/login", async(req, res)=>{
            if(!user){
             throw new Error("Invllid credentials")
            }
-            console.log(req.body)
+            // console.log(req.body)
            const isPasswordValid=await user.validatePassword(password);
             
            if(isPasswordValid){

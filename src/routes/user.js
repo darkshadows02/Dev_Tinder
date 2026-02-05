@@ -6,7 +6,7 @@ const User = require("../models/user");
 const userRouter=express.Router();
 
 
-const USER_SAFE_DATA="firstName lastName age gender about skill";
+const USER_SAFE_DATA="firstName lastName photoUrl age gender about skill";
 
 //get all the pending request for the loggedIn user
 userRouter.get("/user/requests/received",userauth, async(req, res)=>{
@@ -50,6 +50,7 @@ userRouter.get("/user/connections", userauth,  async(req, res)=>{
 })
 
 userRouter.get("/feed", userauth, async(req, res)=>{
+           
        try{
            const page=parseInt(req.query.page) || 1;
            const limit =parseInt(req.query.limit) || 10;
@@ -63,20 +64,20 @@ userRouter.get("/feed", userauth, async(req, res)=>{
                 {toUserId:loggedInUser._id}
             ]
         }).select("fromUserId toUserId");
-
+         
         const hideUserFromFeed = new Set();
         conncetionRequests.forEach((req)=>{
             hideUserFromFeed.add(req.fromUserId.toString());
             hideUserFromFeed.add(req.toUserId.toString());
         });
-
+         
         const users =await User.find({
             $and:[
               {_id:{$nin:Array.from(hideUserFromFeed)}},
                {_id:{$ne:loggedInUser._id}}
             ]
         }).select(USER_SAFE_DATA).skip(skip).limit(limit)
-
+      
       res.send(users);
 
        }catch(err){
