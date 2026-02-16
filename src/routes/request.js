@@ -7,8 +7,9 @@ const  requestRouter=express.Router();
 requestRouter.post("/request/send/:status/:toUserId",userauth, async (req, res)=>{
      try{
         const fromUserId=req.user._id;
-        const toUserId=req.params.toUserId;
-        const status=req.params.status;
+        const {toUserId, status}=req.params;
+           console.log(fromUserId +" "+toUserId+" "+status);
+        
         // in case of status there is two possile ways 
         const allowedStatus=["ignored", "interested"];
           if(!allowedStatus.includes(status)){

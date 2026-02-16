@@ -48,12 +48,21 @@ const userSchema=mongoose.Schema({
     },
     photoUrl:{
         type:String,
-        default:"https://www.pngkey.com/maxpic/u2q8r5t4i1t4o0q8/",
-        validate(value){
-            if(!validator.isURL(value)){
-                throw new Error("Invalid PHOTO URL"+value);
+        default:"https://lh3.googleusercontent.com/ogw/AF2bZygmINjh-OJxmP9CD56hA87TU_r6U_kbwiveTKNQUZv7aQ=s64-c-mo",
+        // validate(value){
+        //     if(!validator.isURL(value)){
+        //         throw new Error("Invalid PHOTO URL"+value);
+        //     }
+        // }
+        validate(value) {
+            if (
+               !validator.isURL(value) &&
+               !value.startsWith("data:image/")
+            ) {
+               throw new Error("Invalid PHOTO URL");
             }
-        }
+         }
+         
     },
     about:{
         type:String,

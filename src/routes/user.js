@@ -6,11 +6,11 @@ const User = require("../models/user");
 const userRouter=express.Router();
 
 
-const USER_SAFE_DATA="firstName lastName photoUrl age gender about skill";
-
+const USER_SAFE_DATA = "_id firstName lastName emailId photoUrl gender age about skill";
+                                                                                                                                                                                                     
 //get all the pending request for the loggedIn user
 userRouter.get("/user/requests/received",userauth, async(req, res)=>{
-     try{
+     try{                                  
         const loggedInUser=req.user;
          const conncetionRequest=await ConncetionRequest.find({
             toUserId:loggedInUser._id,
@@ -25,6 +25,7 @@ userRouter.get("/user/requests/received",userauth, async(req, res)=>{
         res.status(400).send("ERROR"+err.message)
      }
 })
+//user all  friends
 userRouter.get("/user/connections", userauth,  async(req, res)=>{
     try{
         const loggedInUser=req.user;
@@ -37,18 +38,24 @@ userRouter.get("/user/connections", userauth,  async(req, res)=>{
         .populate("toUserId", USER_SAFE_DATA);
 
         const data=conncetionRequest.map((row)=>{
-                if(row.fromUserId.toString()===loggedInUser._id.toString()){
-                    return row.toUserId
-                }else{
-                    return row.fromUserId
-                }
+            
+                // if(row.fromUserId._id.toString()===loggedInUser._id.toString()){
+                //     return row.toUserId
+                // }else{
+                //     return row.fromUserId
+                // }
+                const fromUser = row.fromUserId && row.fromUserId._id ? row.fromUserId : { _id: row.fromUserId };
+                const toUser = row.toUserId && row.toUserId._id ? row.toUserId : { _id: row.toUserId };
+    
+                return fromUser._id.toString() === loggedInUser._id.toString() ? toUser : fromUser;
         })
         res.json({data})
     }catch(err){
         res.status(400).send("ERROR"+err.message) 
     }
 })
-
+ 
+ 
 userRouter.get("/feed", userauth, async(req, res)=>{
            
        try{

@@ -6,8 +6,10 @@
  const authRouter=express.Router();
  authRouter.post("/signup", async (req, res)=>{
     try{
+        // console.log("sur")
         validateSignUpDate(req); 
       const {firstName, lastName, emailId, password}=req.body;
+        
         const passwordHash=await bcrypt.hash(password, 10);
   
  const user=new User({
@@ -16,8 +18,17 @@
       emailId,
       password:passwordHash
  }); 
-       await user.save()
-       res.send("user add sucessfully...")
+     
+
+      const savedUser= await user.save();
+      
+      const token=await savedUser.getJWT();
+       
+      res.cookie("token" , token, {
+        expires: new Date(Date.now() + 8*36000000)
+      });
+      
+       res.json({message:"user add sucessfully...", data:savedUser})
         }catch(err){
             res.status(400).send("error saving the user:"+ err.message);
         }
@@ -53,9 +64,5 @@ authRouter.post("/logout", async (req, res)=>{
       });
       res.send("logout sucessfll !!")
 })
-
- 
-
-
  module.exports=authRouter;
  
