@@ -6,7 +6,7 @@
  const authRouter=express.Router();
  authRouter.post("/signup", async (req, res)=>{
     try{
-        // console.log("sur")
+        
         validateSignUpDate(req); 
       const {firstName, lastName, emailId, password}=req.body;
         
