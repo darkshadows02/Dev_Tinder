@@ -3,11 +3,9 @@ const connectDb =require("./config/database")
 const app=express();
  const cookieParser =require("cookie-parser")
  const cors = require("cors")
+  
+ const PORT = process.env.PORT || 3000;
 
-//  app.use(cors({
-//     origin:"http://localhost:5173",
-//     credentials:true,
-//  }));
   
 
 app.use(cors({
@@ -35,7 +33,7 @@ app.use("/", userRouter)
 
 connectDb().then(()=>{
     console.log("cluster connected sucessfually...")
-    app.listen(3000, ()=>{
+    app.listen(PORT, ()=>{
         console.log("server created sucessfully")
     });
 }).catch((err)=>{
