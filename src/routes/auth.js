@@ -25,6 +25,9 @@
       const token=await savedUser.getJWT();
        
       res.cookie("token" , token, {
+        httpOnly:true,
+        secure:true,
+        sameSite:"none",
         expires: new Date(Date.now() + 8*36000000)
       });
       
@@ -47,8 +50,8 @@ authRouter.post("/login", async(req, res)=>{
             
            if(isPasswordValid){
              const token= await  user.getJWT();
-             res.cookie("token", token, {httpOnly:true,secure: false,
-              sameSite: "lax", });
+             res.cookie("token", token, {httpOnly:true,secure: true,
+              sameSite: "none", });
              res.send (user)
            }else{
               throw new Error("Invalid credential")

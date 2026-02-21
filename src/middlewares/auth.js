@@ -8,8 +8,8 @@ const userauth=async (req, res, next)=>{
        if(!token){
           return res.status(401).send("Please Login!")
        }
-       //"DEV@INDER$790"
-       const decodedobj=await jwt.verify(token,  process.env.JWT_SECRET);
+       const SECRET_CODE=process.env.JWT_SECRET || "DEV@INDER$790"
+       const decodedobj=await jwt.verify(token,  SECRET_CODE);
        const {_id}=decodedobj;
        const user= await User.findById(_id);
        if(!user){
